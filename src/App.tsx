@@ -1,13 +1,13 @@
-import './App.css';
+import HeaderBar from "./Components/Header";
+import {theme} from "./Components/Theme";
+import {ThemeProvider} from '@mui/material/styles';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Crypto-Vis
-        </p>
-      </header>
+      <ThemeProvider theme={theme}>
+        <HeaderBar></HeaderBar>
+      </ThemeProvider>
     </div>
   );
 }
