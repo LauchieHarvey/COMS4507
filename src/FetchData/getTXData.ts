@@ -59,8 +59,6 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
 
     if (output.spending_outpoints.length !== 0) {
       tx_out.spend_tx = output.spending_outpoints[0].tx_index; //Need to update to handle multiple spendings --------------
-      console.log("=== SPENDING OUTPOINT ===");
-      console.log(JSON.stringify(output.spending_outpoints[0]));
     }
 
     tx.outputs.push(tx_out);

@@ -5,7 +5,7 @@ import React from 'react';
 
 const HeaderBar = () => {
     return (
-        <AppBar position="static" >
+        <AppBar position="static" elevation={2}>
             <Toolbar variant="dense">
                 <IconButton
                     size="small"
