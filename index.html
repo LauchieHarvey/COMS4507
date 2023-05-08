@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test function</title>
+</head>
+<body>
+	<script src="app.js"></script>
+	<script>
+		getBTCTransactionData('3886957229608510')
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        getDOGETransactionData('65ffff51fbf7385d9e0b498f6f2dfaad4d418f74287454ee8e40599fab903128')
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });    
+</script>
+</body>
+</html>
