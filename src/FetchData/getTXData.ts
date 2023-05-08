@@ -25,7 +25,7 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
     time: data.time,
     num_in:  data.vin_sz,
     num_out:  data.vout_sz,
-    tx_index:  data.tx_index,
+    tx_index:  data.tx_index, //TRANSACTION INDEX OF THE WHOLE TRANSACTION
     value: 0,
     inputs:  [],
     outputs:  [],
@@ -38,7 +38,7 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
     const input = data.inputs[i];
     const tx_in: TransactionInput = {
       value: input.prev_out.value,
-      tx_index: input.prev_out.tx_index,
+      tx_index: input.prev_out.tx_index, //TRANSACTION INDEX OF WHERE THIS INPUT CAME FROM, ie PREVIOUS TRANSACTION, WOULD EXPAND LEFT.
       where: input.prev_out.addr,
       bad_address: await checkBTCAbuse(input.prev_out.addr),
     };
@@ -52,13 +52,13 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
     const output = data.out[i];
     const tx_out: TransactionOutput = {
       value:  output.value,
-      tx_index:  output.tx_index,
+      tx_index:  output.tx_index, //TRANSACTION INDEX OF THE WHOLE TRANSACTION
       where:  output.addr,
       bad_address: await checkBTCAbuse(output.addr),
     };
 
     if (output.spending_outpoints.length !== 0) {
-      tx_out.spend_tx = output.spending_outpoints[0].tx_index; //Need to update to handle multiple spendings --------------
+      tx_out.spend_tx = output.spending_outpoints[0].tx_index; //Need to update to handle multiple spendings -------------- //TRANSACTION INDEX OF WHERE THIS TRANSFERED MONEY WAS SPENT, EXPANDING RIGHT
     }
 
     tx.outputs.push(tx_out);
