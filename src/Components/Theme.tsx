@@ -6,4 +6,13 @@ export const theme = createTheme({
             main: "#f7931a",
         },
     },
+    components: {
+        MuiButton: {
+            defaultProps: {
+                sx: {
+                    textTransform: 'none',
+                }
+            }
+        }
+    }
 });
