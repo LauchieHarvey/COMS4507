@@ -133,7 +133,7 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
     console.log(JSON.stringify(treeData));
 
     return (
-        <Box id="canvas" sx={{height: '90vh'}}>
+        <Box id="canvas" sx={{height: '100vh'}}>
             {treeData == undefined ? (
                 <Typography>Could not load data for this Transaction hash.</Typography>
             ) : (

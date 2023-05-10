@@ -1,4 +1,5 @@
 import HeaderBar from "./Components/Header";
+import FormSection from "./Components/FormSection";
 import {theme} from "./Components/Theme";
 import {ThemeProvider} from '@mui/material/styles';
 import {Box} from '@mui/material';
@@ -10,13 +11,12 @@ function App() {
   const currentHash = '3886957229608510';
 
   return (
-    <div className="App">
+    <div className="App" style={{height: '100vh', overflow: 'hidden'}}>
       <ThemeProvider theme={theme}>
-        <Box sx={{display: 'flex', height: '100vh', flexDirection: 'column'}}>
-          <HeaderBar></HeaderBar>
-          <Box sx={{border: '1px solid black'}}>
-            <Visualisation txHash={currentHash} loadTXData={getBTCTransactionData}/>
-          </Box>
+        <HeaderBar></HeaderBar>
+        <FormSection></FormSection>
+        <Box sx={{border: '1px solid black', height: '100vh'}}>
+          <Visualisation txHash={currentHash} loadTXData={getBTCTransactionData}/>
         </Box>
       </ThemeProvider>
     </div>

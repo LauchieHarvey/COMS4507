@@ -1,21 +1,10 @@
-import { AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import React from 'react';
-
 
 const HeaderBar = () => {
     return (
-        <AppBar position="static" elevation={2}>
+        <AppBar elevation={1} sx={{position: 'static'}}>
             <Toolbar variant="dense">
-                <IconButton
-                    size="small"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon />
-                </IconButton>
                 <Typography variant="h1" component="div" sx={{ flexGrow: 1, fontSize: '1.5rem'}}>
                     Crypto-Vis
                 </Typography>
