@@ -3,7 +3,7 @@ import FormSection, { UserInput } from "./Components/FormSection";
 import {theme} from "./Components/Theme";
 import {ThemeProvider} from '@mui/material/styles';
 import {Box} from '@mui/material';
-import Visualisation from "./Components/Visualisation/Visualisation";
+import TransactionVisualisation from "./Components/Visualisation/TransactionVisualisation";
 import {getBTCTransactionData} from "./FetchData/getTXData";
 import React from 'react';
 
@@ -17,7 +17,11 @@ function App() {
         <HeaderBar></HeaderBar>
         <FormSection userInput={userInput} setUserInput={setUserInput}></FormSection>
         <Box sx={{border: '1px solid black', height: '100vh'}}>
-          <Visualisation txHash={userInput.text} loadTXData={getBTCTransactionData}/>
+          {userInput.type === 'transactionHash' ? (
+            <TransactionVisualisation txHash={userInput.text} loadTXData={getBTCTransactionData}/>
+          ) : (
+            <p>hi</p>
+          )}
         </Box>
       </ThemeProvider>
     </div>
