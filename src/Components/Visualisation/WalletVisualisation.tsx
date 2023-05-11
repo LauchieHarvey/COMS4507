@@ -1,29 +1,66 @@
 import { Box } from '@mui/material';
-import Graph from 'react-graph-vis';
+import Graph, { graphData } from 'react-graph-vis';
 import React from 'react';
 
+type WalletData = Partial<{
+    addr: any;
+    num_tx: any;
+    bal_rec: any;
+    bal_spent: any;
+    fin_bal: any;
+    txs: Array<{
+        hash: string;
+        value: number;
+        input_tx: string;
+        time: string;
+    }>;
+}>;
+
 interface WalletVisualisationProps {
-    loadAddrData: () => void;
+    loadAddrData: (addrHash: string) => Promise<WalletData>;
     addrHash: string;
 }
 
+const defaultGraphData = {
+    nodes: [
+        { id: 1, label: "Loading Wallet\nData..." },
+    ],
+    edges: []
+};
+const errorGraphData = {
+    nodes: [
+        { id: 1, label: "Failed to Load" },
+    ],
+    edges: []
+};
+
+const generateGraph = (walletData: WalletData) => {
+    console.log("Wallet Data:");
+    console.log(JSON.stringify(walletData));
+    return {nodes: [{id: 1, label: "converted new\n data!"}], edges: []};
+}
+
 const WalletVisualisation = ({addrHash, loadAddrData}: WalletVisualisationProps) => {
-    const graph = {
-        nodes: [
-            { id: 1, label: "Node 1\nvalue: 50", title: "node 1 tootip text" },
-            { id: 2, label: "Node 2", title: "node 2 tootip text" },
-            { id: 3, label: "Node 3", title: "node 3 tootip text" },
-            { id: 4, label: "Node 4", title: "node 4 tootip text" },
-            { id: 5, label: "Node 5", title: "node 5 tootip text" }
-        ],
-        edges: [
-            { from: 1, to: 2 },
-            { from: 1, to: 3 },
-            { from: 4, to: 1 },
-            { from: 5, to: 1 }  
-        ]
-    }
+    const [graph, setGraph] = React.useState<graphData>(defaultGraphData);
     const options = {}
+
+    React.useEffect(() => {
+        let cancel = false;
+        loadAddrData(addrHash).then((walletData: WalletData | undefined) => {
+            if (cancel) return;
+            if (walletData == undefined) {
+                setGraph(defaultGraphData);
+            } else {
+                setGraph(generateGraph(walletData));
+            }
+        }).catch((err) => {
+            console.log(err);
+            setGraph(errorGraphData);
+        });
+        return () => {
+            cancel = true;
+        }
+    }, [addrHash, loadAddrData])
 
 
     return (

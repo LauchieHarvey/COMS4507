@@ -17,8 +17,8 @@ export async function getBTCAddressData(address) {
       const tx = data.txs[i];
       let input_tx = true; // Initialize as not an input
       let val = 0;
-      for (let j = 0; j < tx.outs.length; j++) {
-        const out_tx = tx.outs[j];
+      for (let j = 0; j < tx.out.length; j++) {
+        const out_tx = tx.out[j];
         val += out_tx.value;
         if (out_tx.addr === address) {
           input_tx = false;
