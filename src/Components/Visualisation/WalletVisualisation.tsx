@@ -1,10 +1,17 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 
-const WalletVisualisation = () => {
+interface WalletVisualisationProps {
+    loadAddrData: () => void;
+    addrHash: string;
+}
+
+const WalletVisualisation = ({addrHash, loadAddrData}: WalletVisualisationProps) => {
+
+
     return (
         <Typography variant="h1" component="div" sx={{ flexGrow: 1, fontSize: '1.5rem'}}>
-            Crypto-Vis
+            The current hash is {addrHash}
         </Typography>
     );
 }

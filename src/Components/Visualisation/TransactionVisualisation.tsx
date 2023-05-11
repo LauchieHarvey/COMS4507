@@ -82,14 +82,14 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => (
                 <text x={xPos} dy="60">Value In: {valueIn}</text>
                 {nodeHasChildrenLoaded && (
                     <>
-                        <text x={xPos} dy="80">Transaction Index: {tx_index}</text>
-                        <text x={xPos} dy="100">Time: {tx_index}</text>
-                        <text x={xPos} dy={"120"}>Output Values:</text>
+                        <text key="txIndx" x={xPos} dy="80">Transaction Index: {tx_index}</text>
+                        <text key="time" x={xPos} dy="100">Time: {tx_index}</text>
+                        <text key="out-val" x={xPos} dy={"120"}>Output Values:</text>
                         {nodeDatum.children?.map((childNode, index) => {
                             const value = childNode.attributes?.value ?? 'unkown';
                             const childNodeName = `${childNode.name.slice(0,5)}...`;
                             return (
-                                <text x={xPos + 10} dy={140 + 20 * index}>To {childNodeName}: {value}</text>
+                                <text key={`outval-${index}`} x={xPos + 10} dy={140 + 20 * index}>To {childNodeName}: {value}</text>
                             );
                         })}
                     </>
@@ -124,7 +124,7 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
         return () => {
             cancel = true;
         }
-    }, [txHash]);
+    }, [txHash, loadTXData]);
 
     const loadNodeTransaction = async (loadingSpendTX: number) => {
         try {

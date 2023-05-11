@@ -1,4 +1,4 @@
-async function getBTCAddressData(address) {
+export async function getBTCAddressData(address) {
     const url = `https://blockchain.info/rawaddr/${address}`;
   
     const response = await fetch(url);
@@ -36,7 +36,7 @@ async function getBTCAddressData(address) {
     return ad;
 }
   
-  async function getDOGEAddressData(address) {
+  export async function getDOGEAddressData(address) {
     const url = 'https://dogechain.info/api/v1/address/';
   
     let response = await fetch(url + 'balance/' + address);
