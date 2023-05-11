@@ -17,6 +17,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
         name: data.hash,
         attributes: {
             time: data.time,
+            tx_index: data.tx_index ?? -1,
             num_in: data.num_in,
             num_out: data.num_out,
             value: data.value,
@@ -48,7 +49,6 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
 const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => ({nodeDatum, onNodeClick, toggleNode}: CustomNodeElementProps) => {
 
     const handleNodeClick = (e: React.MouseEvent) => {
-        console.log(`The node ${JSON.stringify(nodeDatum)} has been clicked.`);
         if (nodeDatum.attributes == undefined) {
             console.log("For some reason this node doesn't have any attributes.");
             console.log(JSON.stringify(nodeDatum));
@@ -61,10 +61,41 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => (
         onNodeClick(e);
     }
 
+    const nodeHasLoadableChildren = nodeDatum.attributes?.spend_tx !== undefined;
+    const nodeHasChildrenLoaded = nodeDatum.children && nodeDatum.children.length > 0;
+    let tx_index = nodeDatum.attributes?.tx_index;
+    if (tx_index == undefined || tx_index == -1) {
+        tx_index = 'unknown';
+    }
+    const valueIn = nodeDatum.attributes?.value ?? 'unknown';
+
+    const shortenedWalletAddress = `${nodeDatum.name.slice(0, 12)}...`;
+    const xPos = -60;
+
+    const nodeIsExpandable = nodeHasChildrenLoaded || nodeHasLoadableChildren;
+
     return (
-        <>
-            <circle r={15} onClick={handleNodeClick}></circle>
-        </>
+        <g>
+            <circle r={15} onClick={handleNodeClick} style={nodeIsExpandable ? {cursor: 'pointer'} : {cursor: 'default'}}></circle>
+            <g>
+                <text x={xPos} dy="40">Wallet #: {shortenedWalletAddress}</text>
+                <text x={xPos} dy="60">Value In: {valueIn}</text>
+                {nodeHasChildrenLoaded && (
+                    <>
+                        <text x={xPos} dy="80">Transaction Index: {tx_index}</text>
+                        <text x={xPos} dy="100">Time: {tx_index}</text>
+                        <text x={xPos} dy={"120"}>Output Values:</text>
+                        {nodeDatum.children?.map((childNode, index) => {
+                            const value = childNode.attributes?.value ?? 'unkown';
+                            const childNodeName = `${childNode.name.slice(0,5)}...`;
+                            return (
+                                <text x={xPos + 10} dy={140 + 20 * index}>To {childNodeName}: {value}</text>
+                            );
+                        })}
+                    </>
+                )}
+            </g>
+        </g>
 
     )
 }
@@ -120,7 +151,6 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
             
             } else {
                 console.log("No TX data returned.");
-                console.log(JSON.stringify(txData));
             }
 
         } catch (err) {
@@ -128,9 +158,6 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
             console.error(err);
         }
     }
-
-    console.log("Tree Data on render:");
-    console.log(JSON.stringify(treeData));
 
     return (
         <Box id="canvas" sx={{height: '100vh'}}>
@@ -140,6 +167,8 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
                 <Tree
                     data={treeData}
                     orientation="horizontal"
+                    depthFactor={350}
+                    separation={{siblings: 2}}
                     renderCustomNodeElement={WalletNode(loadNodeTransaction)}
                 ></Tree>
             )}

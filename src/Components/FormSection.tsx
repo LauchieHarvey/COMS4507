@@ -37,21 +37,24 @@ const FormSection = ({userInput, setUserInput}: FormSectionProps) => {
                 marginX: '20px',
             }}
             >
-            <TextField placeholder="TX Hash or Wallet Address" onChange={handleTextChange} value={text}/>
-            <ButtonGroup variant="contained">
-                <Button onClick={() => handleSubmit('dogecoin')}>
-                    <CurrencyBitcoinIcon/>
-                    <Typography component="span" sx={{textDecorationLine: userInput?.coin === 'bitcoin' ? 'underline' : 'none'}}>
-                        Bitcoin
-                    </Typography>
-                </Button>
-                <Button onClick={() => handleSubmit('bitcoin')}>
-                    <Typography component="span" fontWeight="bold" marginRight="5px">Ð</Typography>
-                    <Typography component="span" sx={{textDecorationLine: userInput?.coin === 'dogecoin' ? 'underline' : 'none'}}>
-                        Doge Coin
-                    </Typography>
-                </Button>
-            </ButtonGroup>
+            <TextField placeholder="TX Hash or Wallet Address" onChange={handleTextChange} value={text} sx={{minWidth: {lg: '500px', md: '400px', sm: '300px', xs: '200px'}}}/>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                <Typography alignSelf="center">Search For</Typography>
+                <ButtonGroup variant="contained">
+                    <Button onClick={() => handleSubmit('bitcoin')}>
+                        <CurrencyBitcoinIcon/>
+                        <Typography component="span" sx={{textDecorationLine: userInput?.coin === 'bitcoin' ? 'underline' : 'none'}}>
+                            Bitcoin
+                        </Typography>
+                    </Button>
+                    <Button onClick={() => handleSubmit('dogecoin')}>
+                        <Typography component="span" fontWeight="bold" marginRight="5px">Ð</Typography>
+                        <Typography component="span" sx={{textDecorationLine: userInput?.coin === 'dogecoin' ? 'underline' : 'none'}}>
+                            Doge Coin
+                        </Typography>
+                    </Button>
+                </ButtonGroup>
+            </Box>
         </Box>
     );
 }
