@@ -5,16 +5,47 @@ export const formatProxyURL = (actualURL: string) => {
   return proxyUrl + actualURL;
 }
 
-async function checkBTCAbuse(address: string): Promise<boolean> {
-  const url = 'https://www.bitcoinabuse.com/api/reports/check';
+function parseCSVAndGetColumn(csvData: string, columnIndex: number) {
+  const rows = csvData.split('\n');
+  const columnArray: Array<string> = [];
+
+  rows.forEach(row => {
+    const columns = row.split(',');
+    if (columns.length > columnIndex) {
+      columnArray.push(columns[columnIndex]);
+    }
+  });
+
+  return columnArray;
+}
+
+const loadBadAddresses = async () => {
+  const url = 'https://www.bitcoinabuse.com/api/download/1d?api_token=';
   const api_key = '1aQ4pCEjVpAFupqxdQuQuJxeAKm3cgyOxDlu7vCZ';
+  try {
+    const res = await fetch(`${url}${api_key}`);
+    const csvData = await res.text();
+    badAddresses = parseCSVAndGetColumn(csvData, 1);
+    console.log("These are bad Bitcoin addresses for today. See what happens when you search one.");
+    badAddresses.forEach((address) => {
+      if (address !== 'address') {
+        console.log(address);
+      }
+    });
+    console.log("=== End Bad Addresses ===");
+  } catch (err) {
+    console.log("Couldn't fetch bad bitcoin address data.");
+    console.log(err);
+  }
+}
 
-  const response = await fetch(`${url}?address=${address}&api_token=${api_key}`);
-  const data = await response.json();
+// Gets populated with bad addresses on startup.
+let badAddresses: Array<string> = [];
+loadBadAddresses();
 
-  //console.log(JSON.stringify(data, null, 4));
 
-  return data.count > 0;
+export const checkBTCAbuse = (address: string): boolean => {
+  return badAddresses.includes(address);
 }
 
 //https://www.walletexplorer.com/ Has lots of wallets but no API
@@ -45,7 +76,7 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
       value: input.prev_out.value,
       tx_index: input.prev_out.tx_index, //TRANSACTION INDEX OF WHERE THIS INPUT CAME FROM, ie PREVIOUS TRANSACTION, WOULD EXPAND LEFT.
       where: input.prev_out.addr,
-      bad_address: await checkBTCAbuse(input.prev_out.addr),
+      bad_address: checkBTCAbuse(input.prev_out.addr),
     };
 
     total_val += tx_in.value;
@@ -59,7 +90,7 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
       value:  output.value,
       tx_index:  output.tx_index, //TRANSACTION INDEX OF THE WHOLE TRANSACTION
       where:  output.addr,
-      bad_address: await checkBTCAbuse(output.addr),
+      bad_address: checkBTCAbuse(output.addr),
     };
 
     if (output.spending_outpoints.length !== 0) {
@@ -71,7 +102,6 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
 
   tx.value = total_val;
 
-  console.log(JSON.stringify(tx, null, 4));
   return tx;
 }
 
@@ -130,7 +160,6 @@ export async function getDOGETransactionData(hash: string): Promise<Transaction>
 
   tx.value = total_val;
 
-  console.log(JSON.stringify(tx, null, 4));
   return tx;
 }
 

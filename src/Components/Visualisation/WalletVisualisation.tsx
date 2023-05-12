@@ -3,6 +3,7 @@ import Graph, { graphData } from 'react-graph-vis';
 import { formatHashString, formatTime } from './utils';
 import 'vis-network/styles/vis-network.css';
 import React from 'react';
+import { checkBTCAbuse } from '../../FetchData/getTXData';
 
 type WalletTransactionData = Partial<{
     hash: string;
@@ -66,13 +67,11 @@ const createTransactionLabel = (txData: WalletTransactionData, initial: boolean,
 }
 
 const generateGraph = (walletData: WalletData, currency: string) => {
-    console.log("== Wallet Data ==");
-    console.log(JSON.stringify(walletData, null, 2));
-    console.log("======");
     let nodes: any[] = [];
     let edges: any[] = [];
     // Push the Wallet node.
-    nodes.push({id: 1, label: createWalletNodeLabel(walletData), group: 'wallet'});
+    const badWallet = checkBTCAbuse(walletData.addr);
+    nodes.push({id: 1, label: createWalletNodeLabel(walletData), group: 'wallet', color: badWallet ? '#ee0000' : undefined});
     if (walletData.txs) {
         // Push the transaction nodes.
         for (let i = 0; i < walletData.txs.length; ++i) {

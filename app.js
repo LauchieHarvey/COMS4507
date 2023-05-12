@@ -120,7 +120,6 @@ async function getDOGETransactionData(hash) {
 
   tx.value = total_val;
 
-  console.log(JSON.stringify(tx, null, 4));
   return tx;
 }
 
