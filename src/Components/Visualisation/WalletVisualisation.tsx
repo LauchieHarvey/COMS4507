@@ -1,6 +1,6 @@
 import { Box, useTheme } from '@mui/material';
-import Graph, { graphData, graphEvents } from 'react-graph-vis';
-import { formatHashString } from './utils';
+import Graph, { graphData } from 'react-graph-vis';
+import { formatHashString, formatTime } from './utils';
 import 'vis-network/styles/vis-network.css';
 import React from 'react';
 
@@ -8,7 +8,7 @@ type WalletTransactionData = Partial<{
     hash: string;
     value: number;
     input_tx: boolean;
-    time: string;
+    time: number;
 }>;
 
 type WalletData = Partial<{
@@ -56,10 +56,11 @@ const createTransactionLabel = (txData: WalletTransactionData, initial: boolean,
     if (initial) {
         return `${txData.value} ${currency}`;
     }
+    const time = formatTime(txData.time);
     return [
         `${directionText} transaction.`,
         `Hash: ${formatHashString(txData.hash)}`,
-        `Time: ${txData.time}`,
+        `Time: ${time}`,
         `Value: ${txData.value}`
     ].join('\n');
 }

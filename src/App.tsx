@@ -25,7 +25,7 @@ function App() {
         <FormSection userInput={userInput} setUserInput={setUserInput}></FormSection>
         <Box sx={{border: '1px solid black', height: '100vh'}}>
           {userInput.type === 'transactionHash' ? (
-            <TransactionVisualisation txHash={userInput.text} loadTXData={txLoadFn}/>
+            <TransactionVisualisation txHash={userInput.text} loadTXData={txLoadFn} currency={currency}/>
           ) : (
             <WalletVisualisation addrHash={userInput.text} loadAddrData={addrLoadFn} currency={currency}></WalletVisualisation>
           )}

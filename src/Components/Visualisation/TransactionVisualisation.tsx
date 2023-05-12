@@ -4,6 +4,7 @@ import Tree, {RawNodeDatum, CustomNodeElementProps} from 'react-d3-tree';
 import { Typography } from '@mui/material';
 import { Transaction } from '../../FetchData/Types';
 import cloneDeep from 'lodash.clonedeep';
+import { formatHashString, formatTime } from './utils';
 
 
 /**
@@ -46,7 +47,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
     return treeData;
 }
 
-const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => ({nodeDatum, onNodeClick, toggleNode}: CustomNodeElementProps) => {
+const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>, currency: string) => ({nodeDatum, onNodeClick, toggleNode}: CustomNodeElementProps) => {
 
     const handleNodeClick = (e: React.MouseEvent) => {
         if (nodeDatum.attributes == undefined) {
@@ -68,8 +69,8 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => (
         tx_index = 'unknown';
     }
     const valueIn = nodeDatum.attributes?.value ?? 'unknown';
-
-    const shortenedWalletAddress = `${nodeDatum.name.slice(0, 12)}...`;
+    const date = formatTime(nodeDatum.attributes?.time as number);
+    const shortenedWalletAddress = formatHashString(nodeDatum.name);
     const xPos = -60;
 
     const nodeIsExpandable = nodeHasChildrenLoaded || nodeHasLoadableChildren;
@@ -79,11 +80,11 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => (
             <circle r={15} onClick={handleNodeClick} style={nodeIsExpandable ? {cursor: 'pointer'} : {cursor: 'default'}}></circle>
             <g>
                 <text x={xPos} dy="40">Wallet #: {shortenedWalletAddress}</text>
-                <text x={xPos} dy="60">Value In: {valueIn}</text>
+                <text x={xPos} dy="60">Value In: {valueIn}{` ${currency}`}</text>
                 {nodeHasChildrenLoaded && (
                     <>
-                        <text key="txIndx" x={xPos} dy="80">Transaction Index: {tx_index}</text>
-                        <text key="time" x={xPos} dy="100">Time: {tx_index}</text>
+                        <text x={xPos} dy="80">Date: {date}</text>
+                        <text key="txIndx" x={xPos} dy="100">Transaction Index: {tx_index}</text>
                         <text key="out-val" x={xPos} dy={"120"}>Output Values:</text>
                         {nodeDatum.children?.map((childNode, index) => {
                             const value = childNode.attributes?.value ?? 'unkown';
@@ -103,9 +104,10 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>) => (
 interface VisualisationProps {
     txHash: string;
     loadTXData: (hash: string) => Promise<Transaction>;
+    currency: string;
 };
  
-const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
+const Visualisation = ({txHash, loadTXData, currency}: VisualisationProps) => {
     const [treeData, setTreeData] = React.useState<RawNodeDatum | undefined>();
 
     React.useEffect(() => {
@@ -168,8 +170,8 @@ const Visualisation = ({txHash, loadTXData}: VisualisationProps) => {
                     data={treeData}
                     orientation="horizontal"
                     depthFactor={350}
-                    separation={{siblings: 2}}
-                    renderCustomNodeElement={WalletNode(loadNodeTransaction)}
+                    separation={{siblings: 2, nonSiblings: 2}}
+                    renderCustomNodeElement={WalletNode(loadNodeTransaction, currency)}
                 ></Tree>
             )}
         </Box>
