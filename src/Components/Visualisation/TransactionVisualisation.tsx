@@ -74,10 +74,11 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>, curr
     const xPos = -60;
 
     const nodeIsExpandable = nodeHasChildrenLoaded || nodeHasLoadableChildren;
+    const isBadAddress = nodeDatum.attributes?.bad_address ?? false;
 
     return (
         <g>
-            <circle r={15} onClick={handleNodeClick} style={nodeIsExpandable ? {cursor: 'pointer'} : {cursor: 'default'}}></circle>
+            <circle r={15} onClick={handleNodeClick} style={nodeIsExpandable ? {cursor: 'pointer'} : {cursor: 'default'}} fill={isBadAddress ? '#ee0000' : undefined}></circle>
             <g>
                 <text x={xPos} dy="40">Wallet #: {shortenedWalletAddress}</text>
                 <text x={xPos} dy="60">Value In: {valueIn}{` ${currency}`}</text>
