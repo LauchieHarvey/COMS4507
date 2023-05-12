@@ -1,3 +1,5 @@
+import { formatProxyURL } from "./getTXData";
+
 export async function getBTCAddressData(address) {
     const url = `https://blockchain.info/rawaddr/${address}`;
   
@@ -37,7 +39,7 @@ export async function getBTCAddressData(address) {
 }
   
   export async function getDOGEAddressData(address) {
-    const url = 'https://dogechain.info/api/v1/address/';
+    const url = formatProxyURL('https://dogechain.info/api/v1/address/');
   
     let response = await fetch(url + 'balance/' + address);
     let data = await response.json();
@@ -63,7 +65,7 @@ export async function getBTCAddressData(address) {
     
     for (let i = 0; i < data.transactions.length; i++) {
       const tx_hash = data.transactions[i].hash;
-      response = await fetch('https://dogechain.info/api/v1/transaction/' + tx_hash);
+      response = await fetch(formatProxyURL('https://dogechain.info/api/v1/transaction/') + tx_hash);
       data = await response.json();
       const tx = data;
       let input_tx = true; // Initialize as not an input

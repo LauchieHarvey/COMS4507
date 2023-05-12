@@ -1,5 +1,10 @@
 import { Transaction, TransactionInput, TransactionOutput } from "./Types";
 
+const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+export const formatProxyURL = (actualURL: string) => {
+  return proxyUrl + actualURL;
+}
+
 async function checkBTCAbuse(address: string): Promise<boolean> {
   const url = 'https://www.bitcoinabuse.com/api/reports/check';
   const api_key = '1aQ4pCEjVpAFupqxdQuQuJxeAKm3cgyOxDlu7vCZ';
@@ -72,7 +77,6 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
 
 
 export async function getDOGETransactionData(hash: string): Promise<Transaction> {
-  const proxyUrl = "https://cors-anywhere.herokuapp.com/";
   const url = `https://dogechain.info/api/v1/transaction/${hash}`;
   const response = await fetch(proxyUrl + url);
   const data = await response.json();

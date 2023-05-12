@@ -107,7 +107,6 @@ const WalletVisualisation = ({addrHash, loadAddrData, currency}: WalletVisualisa
             wallet: {color: theme.palette.primary.light, font: {color: theme.palette.primary.contrastText}},
             outgoing: {color: theme.palette.secondary.contrastText, font: {color: theme.palette.secondary.light}},
         },
-        tooltip: true,
     };
 
     React.useEffect(() => {
