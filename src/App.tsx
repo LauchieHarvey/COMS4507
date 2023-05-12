@@ -16,6 +16,8 @@ function App() {
   const txLoadFn = userInput.coin === 'bitcoin' ? getBTCTransactionData : getDOGETransactionData;
   const addrLoadFn = userInput.coin === 'bitcoin' ? getBTCAddressData : getDOGEAddressData;
 
+  const currency = userInput.coin === 'bitcoin' ? 'sat' : 'shibe';
+
   return (
     <div className="App" style={{height: '100vh', overflow: 'hidden'}}>
       <ThemeProvider theme={theme}>
@@ -25,7 +27,7 @@ function App() {
           {userInput.type === 'transactionHash' ? (
             <TransactionVisualisation txHash={userInput.text} loadTXData={txLoadFn}/>
           ) : (
-            <WalletVisualisation addrHash={userInput.text} loadAddrData={addrLoadFn}></WalletVisualisation>
+            <WalletVisualisation addrHash={userInput.text} loadAddrData={addrLoadFn} currency={currency}></WalletVisualisation>
           )}
         </Box>
       </ThemeProvider>
