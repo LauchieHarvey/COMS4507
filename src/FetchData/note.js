@@ -66,8 +66,8 @@ export async function getBTCAddressData(address) {
     for (let i = 0; i < data.transactions.length; i++) {
       const tx_hash = data.transactions[i].hash;
       response = await fetch(formatProxyURL('https://dogechain.info/api/v1/transaction/') + tx_hash);
-      data = await response.json();
-      const tx = data;
+      const txdata = await response.json();
+      const tx = txdata.transaction;
       let input_tx = true; // Initialize as not an input
       let val = tx.inputs_value;
       for (let j = 0; j < tx.outputs.length; j++) {
