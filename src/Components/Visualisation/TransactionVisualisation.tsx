@@ -14,6 +14,7 @@ import { formatHashString, formatTime } from './utils';
  * @returns The Raw tree node data that react-d3-tree will use to display the node.
  */
 const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
+    const walletAddr = data.inputs.length > 0 ? data.inputs[0].where : undefined;
     const treeData: RawNodeDatum = {
         name: data.hash,
         attributes: {
@@ -23,6 +24,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
             num_in: data.num_in,
             num_out: data.num_out,
             value: data.value,
+            walletAddr: walletAddr ?? 'unknown',
         },
         children: [],
     };

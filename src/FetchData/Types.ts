@@ -6,13 +6,9 @@
 export type TransactionInput = {
     value: number;
     tx_index?: number;
-    where: Wallet; 
+    where: string; 
     bad_address?: boolean;
-};
-
-export type Wallet = {
-    address: string;
-    nextTransaction: Transaction | null;
+    walletAddr?: string;
 };
 
 export type TransactionOutput = {
