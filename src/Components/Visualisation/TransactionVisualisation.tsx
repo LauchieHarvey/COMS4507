@@ -18,6 +18,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
         name: data.hash,
         attributes: {
             time: data.time,
+            tx_hash: data.hash,
             tx_index: data.tx_index ?? -1,
             num_in: data.num_in,
             num_out: data.num_out,
@@ -33,6 +34,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
             name: txOutput.where,
             attributes: {
                 value: txOutput.value,
+                walletAddr: txOutput.where,
             }
         }
         if (txOutput.bad_address) {
@@ -72,8 +74,10 @@ const WalletNode = (loadNodeTransaction: (txHash: number | string) => Promise<vo
     }
     const valueIn = nodeDatum.attributes?.value ?? 'unknown';
     const date = formatTime(nodeDatum.attributes?.time as number);
-    const shortenedWalletAddress = formatHashString(nodeDatum.name);
+    const walletAddress = nodeDatum.attributes?.walletAddr;
+    const shortenedWalletAddress = formatHashString(walletAddress as string);
     const xPos = -60;
+    let yPos = 40;
 
     const nodeIsExpandable = nodeHasChildrenLoaded || nodeHasLoadableChildren;
     const isBadAddress = nodeDatum.attributes?.bad_address ?? false;
@@ -82,18 +86,18 @@ const WalletNode = (loadNodeTransaction: (txHash: number | string) => Promise<vo
         <g>
             <circle r={15} onClick={handleNodeClick} style={nodeIsExpandable ? {cursor: 'pointer'} : {cursor: 'default'}} fill={isBadAddress ? '#ee0000' : undefined}></circle>
             <g>
-                <text x={xPos} dy="40">Wallet #: {shortenedWalletAddress}</text>
-                <text x={xPos} dy="60">Value In: {valueIn}{` ${currency}`}</text>
+                <text x={xPos} dy={yPos}>Wallet #: {shortenedWalletAddress}</text>
+                <text x={xPos} dy={yPos + 20}>Value In: {valueIn}{` ${currency}`}</text>
                 {nodeHasChildrenLoaded && (
                     <>
-                        <text x={xPos} dy="80">Date: {date}</text>
-                        <text key="txIndx" x={xPos} dy="100">Transaction Index: {tx_index}</text>
-                        <text key="out-val" x={xPos} dy={"120"}>Output Values:</text>
+                        <text x={xPos} dy={yPos + 40}>Date: {date}</text>
+                        <text key="txIndx" x={xPos} dy={yPos + 60}>Transaction Index: {tx_index}</text>
+                        <text key="out-val" x={xPos} dy={yPos + 80}>Output Values:</text>
                         {nodeDatum.children?.map((childNode, index) => {
                             const value = childNode.attributes?.value ?? 'unkown';
                             const childNodeName = `${childNode.name.slice(0,5)}...`;
                             return (
-                                <text key={`outval-${index}`} x={xPos + 10} dy={140 + 20 * index}>To {childNodeName}: {value}</text>
+                                <text key={`outval-${index}`} x={xPos + 10} dy={yPos + 100 + 20 * index}>To {childNodeName}: {value}</text>
                             );
                         })}
                     </>
@@ -143,7 +147,11 @@ const Visualisation = ({txHash, loadTXData, currency}: VisualisationProps) => {
                     if (node.attributes && node.attributes.spend_tx === loadingSpendTX) {
                         const newNode = convertDataToRawNodeDatum(txData);
                         node.name = newNode.name;
-                        node.attributes = {...newNode.attributes};
+                        node.attributes = {
+                            walletAddr: node.attributes.walletAddr,
+                            bad_address: node.attributes.bad_address ?? false,
+                            ...newNode.attributes
+                        };
                         node.children = newNode.children ? [...newNode.children] : [];
                         return true; // Indicates that the target node was found and updated
                     }

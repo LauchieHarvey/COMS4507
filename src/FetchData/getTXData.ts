@@ -116,7 +116,6 @@ export async function getDOGETransactionData(hash: string | number): Promise<Tra
   //print(json.dumps(data, indent=4))
   //print("                   #######################                           ")
 
-
   const tx: Transaction = {
     hash: data.transaction.hash,
     time: data.transaction.time,
