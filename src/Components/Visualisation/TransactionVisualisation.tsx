@@ -47,7 +47,7 @@ const convertDataToRawNodeDatum = (data: Transaction): RawNodeDatum => {
     return treeData;
 }
 
-const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>, currency: string) => ({nodeDatum, onNodeClick, toggleNode}: CustomNodeElementProps) => {
+const WalletNode = (loadNodeTransaction: (txHash: number | string) => Promise<void>, currency: string) => ({nodeDatum, onNodeClick, toggleNode}: CustomNodeElementProps) => {
 
     const handleNodeClick = (e: React.MouseEvent) => {
         if (nodeDatum.attributes == undefined) {
@@ -56,7 +56,9 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>, curr
             return;
         }
         if (nodeDatum.attributes.spend_tx) {
-            loadNodeTransaction(parseInt(nodeDatum.attributes.spend_tx as string));
+            let hashToRequest = nodeDatum.attributes.spend_tx;
+            if (currency === 'sat') hashToRequest = parseInt(hashToRequest as string);
+            loadNodeTransaction(nodeDatum.attributes.spend_tx as string);
         }
         toggleNode();
         onNodeClick(e);
@@ -104,7 +106,7 @@ const WalletNode = (loadNodeTransaction: (txHash: number) => Promise<void>, curr
 
 interface VisualisationProps {
     txHash: string;
-    loadTXData: (hash: string) => Promise<Transaction>;
+    loadTXData: (hash: string | number) => Promise<Transaction>;
     currency: string;
 };
  
@@ -129,7 +131,7 @@ const Visualisation = ({txHash, loadTXData, currency}: VisualisationProps) => {
         }
     }, [txHash, loadTXData]);
 
-    const loadNodeTransaction = async (loadingSpendTX: number) => {
+    const loadNodeTransaction = async (loadingSpendTX: number | string) => {
         try {
             const txData = await loadTXData(loadingSpendTX.toString());
             if (txData) {

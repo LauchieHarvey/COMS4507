@@ -50,7 +50,7 @@ export const checkBTCAbuse = (address: string): boolean => {
 
 //https://www.walletexplorer.com/ Has lots of wallets but no API
 
-export async function getBTCTransactionData(tx_hash: string): Promise<Transaction> {
+export async function getBTCTransactionData(tx_hash: string | number): Promise<Transaction> {
   const url = `https://blockchain.info/rawtx/${tx_hash}`;
 
   const response = await fetch(url);
@@ -106,7 +106,7 @@ export async function getBTCTransactionData(tx_hash: string): Promise<Transactio
 }
 
 
-export async function getDOGETransactionData(hash: string): Promise<Transaction> {
+export async function getDOGETransactionData(hash: string | number): Promise<Transaction> {
   const url = `https://dogechain.info/api/v1/transaction/${hash}`;
   const response = await fetch(proxyUrl + url);
   const data = await response.json();
